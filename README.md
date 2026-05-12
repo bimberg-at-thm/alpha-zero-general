@@ -1,7 +1,25 @@
+# Installation
+
+Da auf JupyterLab bereits alle erforderlichen Abhängigkeiten installiert sind, genügt ein einfacher Aufruf von
+
+```bash
+python main.py
+```
+
+um das aktuelle Training zu starten. Standardmäßig ist derzeit Connect4 aktiviert.
+
+Um ein eigenes Spiel zu verwenden, müssen Sie die Klassen in `Game.py` und `NeuralNet.py` erweitern (subclassen) und die jeweiligen Funktionen implementieren. Beispielimplementierungen für Othello finden Sie in `othello/OthelloGame.py` sowie in `othello/pytorch/NNet.py`.
+
+Die Verwendung von Keras wird derzeit nicht empfohlen, da es auf JupyterLab nicht zuverlässig funktioniert und zudem eine schlechtere Performance als PyTorch aufweist. Verwenden Sie daher bitte ausschließlich die PyTorch-Variante.
+
+`Coach.py` enthält die zentrale Trainingsschleife, während `MCTS.py` die Monte-Carlo-Tree-Search implementiert. Die Parameter für das Self-Play können in `main.py` angepasst werden. Weitere Parameter des neuronalen Netzwerks befinden sich in `othello/pytorch/NNet.py`, beispielsweise das CUDA-Flag, die Batch-Größe, die Anzahl der Epochen oder die Lernrate.
+
+Weitere Informationen sowie die ursprüngliche README finden Sie ab hier:
+
+---
+
 # Alpha Zero General (any game, any framework!)
 A simplified, highly flexible, commented and (hopefully) easy to understand implementation of self-play based reinforcement learning based on the AlphaGo Zero paper (Silver et al). It is designed to be easy to adopt for any two-player turn-based adversarial game and any deep learning framework of your choice. A sample implementation has been provided for the game of Othello in PyTorch and Keras. An accompanying tutorial can be found [here](https://suragnair.github.io/posts/alphazero.html). We also have implementations for many other games like GoBang and TicTacToe.
-
-**DISCLAIMER**: Keras is not supported in this version, please use only PyTorch!
 
 To use a game of your choice, subclass the classes in ```Game.py``` and ```NeuralNet.py``` and implement their functions. Example implementations for Othello can be found in ```othello/OthelloGame.py``` and ```othello/{pytorch,keras}/NNet.py```. 
 
