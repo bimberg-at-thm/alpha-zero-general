@@ -36,6 +36,9 @@ class NNetWrapper(NeuralNet):
 
         self.encoder = encoder
 
+    def get_args(self):
+        return {}
+
     def train(self, examples):
         """
         Encodes examples using one of 2 encoders and starts fitting.

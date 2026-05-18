@@ -11,6 +11,8 @@ from tqdm import tqdm
 
 from connect4.pytorch.Connect4NNet import Connect4NNet as c4net
 from utils import *
+from NeuralNet import NeuralNet
+import mlflow
 
 
 args = dotdict({
@@ -23,7 +25,7 @@ args = dotdict({
 })
 
 
-class NNetWrapper:
+class NNetWrapper(NeuralNet):
     def __init__(self, game):
         self.nnet = c4net(game, args)
         self.board_x, self.board_y = game.getBoardSize()
@@ -31,20 +33,26 @@ class NNetWrapper:
 
         if args.cuda:
             self.nnet.cuda()
+    
+    def get_args(self):
+        return args
 
-    def train(self, examples):
+    def train(self, examples, counter):
         optimizer = optim.Adam(self.nnet.parameters(), lr=args.lr)
+        batch_count = int(len(examples) / args.batch_size)
 
         for epoch in range(args.epochs):
             print(f'EPOCH ::: {epoch + 1}')
+            mlflow.log_metric("epoch", epoch + 1, step=counter())
 
             self.nnet.train()
             pi_losses = AverageMeter()
             v_losses = AverageMeter()
-            batch_count = int(len(examples) / args.batch_size)
 
             t = tqdm(range(batch_count), desc='Training Net')
-            for _ in t:
+            for batch_idx in t:
+                batch_step = counter()
+                mlflow.log_metric("batch_idx", batch_idx, step=batch_step)
                 sample_ids = np.random.randint(len(examples), size=args.batch_size)
                 boards, pis, vs = list(zip(*[examples[i] for i in sample_ids]))
 
@@ -64,6 +72,10 @@ class NNetWrapper:
                 total_loss = l_pi + l_v
 
                 # record loss
+                mlflow.log_metrics({
+                    "loss_pi": l_pi.item(),
+                    "loss_v": l_v.item(),
+                }, step=batch_step)
                 pi_losses.update(l_pi.item(), boards.size(0))
                 v_losses.update(l_v.item(), boards.size(0))
                 t.set_postfix(Loss_pi=pi_losses, Loss_v=v_losses)

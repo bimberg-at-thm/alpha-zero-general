@@ -40,6 +40,9 @@ class NNetWrapper(NeuralNet):
         self.board_x, self.board_y = game.getBoardSize()
         self.action_size = game.getActionSize()
 
+    def get_args(self):
+        return args
+
     def train(self, examples):
         """
         examples: list of examples, each example is of form (board, pi, v)

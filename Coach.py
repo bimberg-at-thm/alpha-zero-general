@@ -12,6 +12,8 @@ from Arena import Arena
 from MCTS import MCTS
 
 log = logging.getLogger(__name__)
+import mlflow
+from itertools import count
 
 
 class Coach():
@@ -76,7 +78,12 @@ class Coach():
         It then pits the new neural network against the old one and accepts it
         only if it wins >= updateThreshold fraction of games.
         """
+        with mlflow.start_run(run_name="training", log_system_metrics=True):
+            mlflow.log_params(self.args)
+            mlflow.log_params(self.nnet.get_args())
+            self._learn()
 
+    def _learn(self):
         for i in range(1, self.args.numIters + 1):
             # bookkeeping
             log.info(f'Starting Iter #{i} ...')
@@ -110,7 +117,13 @@ class Coach():
             self.pnet.load_checkpoint(folder=self.args.checkpoint, filename='temp.pth.tar')
             pmcts = MCTS(self.game, self.pnet, self.args)
 
-            self.nnet.train(trainExamples)
+            
+            with mlflow.start_run(
+                run_name=f"iteration_{i}",
+                nested=True
+            ):
+                step_counter = count()
+                self.nnet.train(trainExamples, lambda: next(step_counter))
             nmcts = MCTS(self.game, self.nnet, self.args)
 
             log.info('PITTING AGAINST PREVIOUS VERSION')

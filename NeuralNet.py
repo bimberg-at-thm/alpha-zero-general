@@ -11,7 +11,10 @@ class NeuralNet():
     def __init__(self, game):
         pass
 
-    def train(self, examples):
+    def get_args(self):
+        pass
+
+    def train(self, examples, counter):
         """
         This function trains the neural network with examples obtained from
         self-play.

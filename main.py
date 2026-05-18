@@ -6,6 +6,10 @@ from Coach import Coach
 from connect4.Connect4Game import Connect4Game as Game
 from connect4.pytorch.NNet import NNetWrapper as nn
 from utils import *
+import mlflow
+
+mlflow.enable_system_metrics_logging()
+#mlflow.set_system_metrics_sampling_interval(5) # set metric interval to 5 seconds
 
 log = logging.getLogger(__name__)
 
@@ -50,6 +54,7 @@ def main():
         c.loadTrainExamples()
 
     log.info('Starting the learning process 🎉')
+    mlflow.set_experiment("connect4")
     c.learn()
 
 

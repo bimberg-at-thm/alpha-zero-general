@@ -32,6 +32,9 @@ class NNetWrapper(NeuralNet):
         self.device = torch.device("cuda" if args.cuda else "cpu")
         self.nnet.to(self.device)
 
+    def get_args(self):
+        return args
+
     def train(self, examples):
         """
         examples: list of (board, pi, v)

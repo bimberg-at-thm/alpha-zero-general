@@ -33,6 +33,9 @@ class NNetWrapper(NeuralNet):
         if args.cuda:
             self.nnet.cuda()
 
+    def get_args(self):
+        return args
+
     def train(self, examples):
         """
         examples: list of examples, each example is of form (board, pi, v)
